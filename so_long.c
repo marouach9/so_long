@@ -19,30 +19,41 @@ int	close_window(t_game *game)
 	exit(0);
 }
 
+static void	init_mlx(t_game *game)
+{
+	game->mlx = mlx_init();
+	if (!game->mlx)
+		error("MLX init failed");
+	game->win = mlx_new_window(game->mlx, game->width * 64,
+			game->height * 64, "so_long");
+	if (!game->win)
+		error("Window creation failed");
+}
+
+static void	init_map(t_game *game, char *filename)
+{
+	char	*file;
+
+	file = read_file(filename);
+	if (!file)
+		error("Cannot read file");
+	game->map = split_lines(file);
+	free(file);
+	validate_map(game);
+	validate_path(game);
+	game->moves = 0;
+}
+
 int	main(int argc, char **argv)
 {
 	t_game	game;
-	char	*file;
 
 	if (argc != 2)
 		error("Usage: ./so_long map.ber");
 	if (!check_extension(argv[1]))
 		error("Map must be a .ber file");
-	file = read_file(argv[1]);
-	if (!file)
-		error("Cannot read file");
-	game.map = split_lines(file);
-	free(file);
-	validate_map(&game);
-	validate_path(&game);
-	game.moves = 0;
-	game.mlx = mlx_init();
-	if (!game.mlx)
-		error("MLX init failed");
-	game.win = mlx_new_window(game.mlx, game.width * 32,
-			game.height * 32, "so_long");
-	if (!game.win)
-		error("Window creation failed");
+	init_map(&game, argv[1]);
+	init_mlx(&game);
 	load_textures(&game);
 	find_player(&game, &game.player_x, &game.player_y);
 	render_map(&game);

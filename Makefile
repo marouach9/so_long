@@ -1,20 +1,22 @@
-CFLAGS = -Wall -Wextra -Werror
-MLX_PATH = mlx/
-MLX = $(MLX_PATH)libmlx.a
-MLX_FLAGS = -L$(MLX_PATH) -lmlx -lXext -lX11 -lm
+CFLAGS		= -Wall -Wextra -Werror
+MLX_PATH	= mlx/
+MLX			= $(MLX_PATH)libmlx.a
+MLX_FLAGS	= -L$(MLX_PATH) -lmlx -lXext -lX11 -lm
+NAME		= so_long
 
-NAME = so_long
+SRCS		= so_long.c \
+			file_reader.c \
+			map_parser.c \
+			map_utils.c \
+			map_walls.c \
+			map_elements.c \
+			move.c \
+			path.c \
+			render.c \
+			utils.c
 
-SRCS = so_long.c \
-	map.c \
-	map_check.c \
-	path.c \
-	utils.c \
-	render.c \
-	move.c
-
-OBJS = $(SRCS:.c=.o)
-INC = so_long.h
+OBJS		= $(SRCS:.c=.o)
+INC			= so_long.h
 
 all: $(MLX) $(NAME)
 

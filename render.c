@@ -1,3 +1,4 @@
+/* render.c */
 #include "so_long.h"
 
 void	load_textures(t_game *game)
@@ -20,11 +21,23 @@ void	load_textures(t_game *game)
 		error("Failed to load textures");
 }
 
+static void	*get_tile_img(t_game *game, char tile)
+{
+	if (tile == '1')
+		return (game->img_wall);
+	if (tile == 'C')
+		return (game->img_collectible);
+	if (tile == 'E')
+		return (game->img_exit);
+	if (tile == 'P')
+		return (game->img_player);
+	return (game->img_floor);
+}
+
 void	render_map(t_game *game)
 {
 	int		i;
 	int		j;
-	void	*img;
 
 	i = 0;
 	while (i < game->height)
@@ -32,18 +45,8 @@ void	render_map(t_game *game)
 		j = 0;
 		while (j < game->width)
 		{
-			if (game->map[i][j] == '1')
-				img = game->img_wall;
-			else if (game->map[i][j] == 'C')
-				img = game->img_collectible;
-			else if (game->map[i][j] == 'E')
-				img = game->img_exit;
-			else if (game->map[i][j] == 'P')
-				img = game->img_player;
-			else
-				img = game->img_floor;
 			mlx_put_image_to_window(game->mlx, game->win,
-				img, j * 32, i * 32);
+				get_tile_img(game, game->map[i][j]), j * 64, i * 64);
 			j++;
 		}
 		i++;

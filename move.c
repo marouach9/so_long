@@ -1,5 +1,33 @@
 #include "so_long.h"
 
+static void	collect_item(t_game *game, int new_x, int new_y)
+{
+	game->collectible--;
+	game->map[new_y][new_x] = '0';
+}
+
+static int	check_exit(t_game *game, int new_x, int new_y)
+{
+	if (game->map[new_y][new_x] != 'E')
+		return (0);
+	if (game->collectible > 0)
+		return (1);
+	game->moves++;
+	printf("Moves: %d\n", game->moves);
+	exit(0);
+}
+
+static void	update_position(t_game *game, int new_x, int new_y)
+{
+	game->map[game->player_y][game->player_x] = '0';
+	game->player_x = new_x;
+	game->player_y = new_y;
+	game->map[new_y][new_x] = 'P';
+	game->moves++;
+	printf("Moves: %d\n", game->moves);
+	render_map(game);
+}
+
 static void	move_player(t_game *game, int dx, int dy)
 {
 	int	new_x;
@@ -10,25 +38,10 @@ static void	move_player(t_game *game, int dx, int dy)
 	if (game->map[new_y][new_x] == '1')
 		return ;
 	if (game->map[new_y][new_x] == 'C')
-	{
-		game->collectible--;
-		game->map[new_y][new_x] = '0';
-	}
-	if (game->map[new_y][new_x] == 'E' && game->collectible > 0)
+		collect_item(game, new_x, new_y);
+	if (check_exit(game, new_x, new_y))
 		return ;
-	if (game->map[new_y][new_x] == 'E' && game->collectible == 0)
-	{
-		game->moves++;
-		printf("Moves: %d\n", game->moves);
-		exit(0);
-	}
-	game->map[game->player_y][game->player_x] = '0';
-	game->player_x = new_x;
-	game->player_y = new_y;
-	game->map[new_y][new_x] = 'P';
-	game->moves++;
-	printf("Moves: %d\n", game->moves);
-	render_map(game);
+	update_position(game, new_x, new_y);
 }
 
 int	key_hook(int keycode, t_game *game)

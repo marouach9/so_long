@@ -15,7 +15,7 @@ void	find_player(t_game *game, int *x, int *y)
 			{
 				*x = j;
 				*y = i;
-				return;
+				return ;
 			}
 			j++;
 		}
@@ -32,17 +32,15 @@ void	flood_fill(char **map, int x, int y, int *exit_found)
 	while (map[height])
 		height++;
 	width = ft_strlen(map[0]);
-
 	if (x < 0 || y < 0 || y >= height || x >= width)
-		return;
+		return ;
 	if (map[y][x] == '1' || map[y][x] == 'F')
-		return;
+		return ;
 	if (map[y][x] == 'E')
 	{
 		*exit_found = 1;
-		return;
+		return ;
 	}
-
 	map[y][x] = 'F';
 	flood_fill(map, x + 1, y, exit_found);
 	flood_fill(map, x - 1, y, exit_found);
